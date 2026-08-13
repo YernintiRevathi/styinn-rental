@@ -1,0 +1,131 @@
+<% layout("/layouts/boilerplate")-%>
+<script>
+    const mapToken="<%=process.env.MAP_TOKEN%>";
+    // If you do not use <%= %>, Node.js will never touch the line, and
+    //  your browser will try to read process.env directly, crashing with a process is not defined error.
+    //< %= %> is for Node.js/EJS to inject the value on the server side.
+    // "" is for JavaScript to read that value as text on the browser side.
+    // console.log("mapToken in show.ejs script",mapToken);
+    // const coordinates=< %- JSON.stringify(listing.geometry.coordinates) %>;//bcuz the data stored in db is in GeoJSON format
+    //we change it to string
+    // console.log("show.ejs",coordinates);
+    const listing=<%- JSON.stringify(listing) %>;
+    // const mapLocation="< %=listing.location%>"+","+"< %=listing.country%>";
+    // console.log("location",listing);
+</script>   
+<div class="container"> 
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2 mt-3">
+            <h3><%=listing.title%></h3>
+        </div>
+            <div class="listing-card card col-12 col-md-8 offset-md-2 overflow-hidden p-0">
+                <div class="row g-0 align-items-center">
+                    <div class="col-12 col-md-6">
+                        <img src="<%=listing.image.url%>" class="card-img-top w-100" style="width:auto; min-height:30vh ; max-height:50vh;  aspect-ratio:1/1; object-fit:cover; object-position:center;" alt="<%=listing.title%>">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="card-body p-4">
+                            <p class="card-text">Owned by <%=listing.owner.username%></p>
+                            <p class="card-text">&#8377; <%=listing.price.toLocaleString("en-IN")%></p>
+                            <p class="card-text"><%=listing.description%></p>
+                            <p class="card-text"><%= listing.location%></p>
+                            <p class="card-text"><%= listing.country%></p>
+                            <%if(currUser && currUser._id.equals(listing.owner._id)){%>
+                                <div class="show-btns mt-3 d-flex gap-2 align-items-center">
+                                    <a href="/listings/<%=listing._id%>/edit"><button class="btn btn-dark">Edit</button></a>
+                                    <form class="m-0" action="/listings/<%=listing._id%>?_method=DELETE" method="post">
+                                        <button class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-8 offset-md-2"><hr></div>
+            <% if(currUser){%>
+                <div class="mb-3 col-12 col-md-8 offset-md-2">
+                    <h4>Leave a Review</h4>
+                    <form class="needs-validation" action="/listings/<%=listing._id %>/reviews" method="post" novalidate>
+                        <!-- we are using starability library for this rating implementation -->
+                        <div class="mb-3 mt-3">    
+                            <label class="form-label" for="rating">Rating</label>                       
+                            <fieldset class="starability-heartbeat">
+                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." required/>
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                            <label for="first-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                            <label for="first-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                            <label for="first-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                            <label for="first-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                            <label for="first-rate5" title="Amazing">5 stars</label>
+                            </fieldset>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label class="form-label" for="comment">Comment</label>
+                            <br>
+                            <textarea class="form-control" placeholder="Leave how you feel.." name="review[comment]" id="comment" rows="5" required></textarea>
+                            <div class="invalid-feedback">Please Add a Comment</div>
+                        </div>
+                        <button class="btn btn-outline-dark">Submit</button>
+                    </form>
+                </div>
+                <div class="col-12 col-md-8 offset-md-2"><hr></div>
+            <%}%>
+            <div class="mb-3 col-12 col-md-8 offset-md-2">
+                <h4>All Reviews</h4>
+                <%if(listing.reviews.length==0){%>
+                    <div class="card-body p-2">
+                        <% if(!currUser){%>
+                            <p class="card-title text-muted small">No Reviews. Login and tell others about your experience!</p>
+                        <%}else{%>
+                            <p class="card-title text-muted small">No Reviews. Tell others about your experience!</p>
+                        <%}%>
+                    </div>
+                <%}%>
+                <div class="row g-3">
+                    <% for (review of listing.reviews){%>
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 p-2">
+                                <div class="card-body">
+                                    <%if(review.author){%>
+                                        <h5 class="card-title fw-bold">@<%=review.author.username%></h5>
+                                    <%}%>
+                                    <p class="card-text starability-result mb-0" data-rating=<%=review.rating%>></p>
+                                    <p class="card-text text-secondary small"><%=review.comment%></p>
+                                    <%if(currUser && review.author && currUser._id.equals(review.author._id)){%>
+                                        <form class="mt-1 mb-1" action="/listings/<%=listing._id%>/reviews/<%=review._id%>/?_method=delete" method="post">
+                                            <button class="btn btn-sm  btn-dark ">Delete</button>
+                                        </form>
+                                    <% }else{%>
+                                        <br>
+                                    <%}%>
+                                </div> 
+                            </div>
+                        </div>
+                    <%}%>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-8 offset-md-2"><hr></div>
+
+            <div class="mb-3 col-12 col-md-8 offset-md-2">
+                <h3>Where you'll be</h3>
+                <form class="map-mode mb-3 d-flex gap-3 align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" name="map-style" id="light-theme" type="radio" value="STREETS" checked>
+                        <label class="form-check-label" for="light-theme">Light mode</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="map-style" id="dark-theme" type="radio" value="STREETS.DARK">
+                        <label class="form-check-label" for="dark-theme">Dark mode</label>
+                    </div>
+                </form>
+                <div id="map" class="w-100" style="height:400px; border-radius:8px;"></div>
+            </div>
+    </div>
+</div>
+<script src="/js/map.js"></script>

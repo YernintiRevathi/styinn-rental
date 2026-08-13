@@ -1,0 +1,11 @@
+<% layout("/layouts/boilerPlate") %>
+<div class="row mt-5">
+    <div class="alert alert-danger col-6 offset-3" role="alert">
+        <h4 class="alert-heading"><%=err.message%></h4>
+        <!-- <p class="text-break"><%= err.stack%></p> -->
+        <!-- text-break to prevent the long text without spaces (like URLs or long words) 
+         from overflowing by default.-->
+         <!-- or text-truncate ,to show like "Error: Page Not Found at C:\D..."
+          rather than th efull message  -->
+    </div>
+</div>

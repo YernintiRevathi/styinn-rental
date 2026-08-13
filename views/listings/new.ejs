@@ -1,0 +1,78 @@
+<% layout("/layouts/boilerplate")-%>
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-12 col-md-8 offset-md-2"> <!--By default the row is 12 columns wide ,so we are saying to use 8  out of 12 cols space-->
+            <br>
+            <h3 >Create a New Listing</h3>
+            <form action="/listings" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+                <div class="mb-3">
+                    <label for="title" class="form-label" >Title</label>
+                    <input class="form-control" name="listing[title]" placeholder="Enter a catchy title" type="text" required>
+                    <div class="valid-feedback">Title Looks Good</div>
+                    <div class="invalid-feedback">Please enter a Title</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label" >Description</label>
+                    <textarea class="form-control" name="listing[description]" placeholder="Enter the description of the place" rows="5" required></textarea>
+                    <div class="invalid-feedback">Please enter a description</div>
+                </div>
+
+                <!-- <div class="mb-3">
+                    <label for="image" class="form-label" >Image</label>
+                    <input class="form-control" name="listing[image]" placeholder="Enter the image URL" type="text">
+                </div> -->
+
+                <div class="mb-3">
+                    <label for="image" class="form-label" >Upload Listing Image</label>
+                    <input class="form-control" name="listing[image]" type="file" >
+                    <p class="mt-1 small" style="opacity: 0.5;" >The added image size will be 1:1 when displayed</p>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label" >Select the category of the place</label>
+                    <select class="form-control text-secondary"
+                        name="listing[category]" 
+                        id="category" 
+                        onchange="this.classList.remove('text-secondary')" 
+                        required>
+                        <option value="" disabled selected hidden>Select an option</option>
+                        <option value="trending">Trending</option>
+                        <option value="rooms">Rooms</option>
+                        <option value="cities">Iconic Cities</option>
+                        <option value="pools">Pools</option>
+                        <option value="camping">camping</option>
+                        <option value="farms">Farms</option>
+                        <option value="mountains">mountains</option>
+                        <option value="arctic">Arctic</option>
+                        <option value="deserts">Deserts</option>
+                        <option value="castles">Castles</option>
+                        <option value="islands">Islands</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label" >Price</label>
+                        <input class="form-control" name="listing[price]" placeholder="1200" required>
+                        <div class="invalid-feedback">Please Enter a Valid Price</div>
+                    </div>
+                    <div class="mb-3 col-md-8">
+                        <label for="country" class="form-label" >Country</label>
+                        <input class="form-control" name="listing[country]" placeholder="India" type="text" required>
+                        <div class="invalid-feedback">Country Name should be valid</div>
+                    </div>
+                    
+                </div>
+                <div class="mb-3 ">
+                    <label for="location" class="form-label" >Location</label>
+                    <input class="form-control" name="listing[location]" placeholder="Goa,India" type="text" required>
+                    <div class="invalid-feedback">Location should be valid</div>
+                </div>
+    
+                <button class="btn btn-dark mt-3">Add</button>
+                <br>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/js/script.js"></script>

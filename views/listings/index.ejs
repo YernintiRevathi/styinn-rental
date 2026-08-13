@@ -1,0 +1,204 @@
+<% layout("/layouts/boilerplate")-%>
+<style>
+#category-filters {
+    position: relative;
+    display: flex;
+    align-items: center; /* Centers the filtering row and the toggle box globally */
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+.collapse-wrapper-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-grow: 1;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+#filters{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    align-items: center;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    flex-grow: 1; /* Allows filter track to take up available space */
+}
+
+#filters::-webkit-scrollbar{
+    display: none;
+}
+.filter{
+    text-align: center;
+    margin-right: 1rem;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+.filter:hover{
+    opacity: 1;
+    cursor:pointer;
+}
+
+.filter p{
+    font-size: 0.8rem;
+}
+
+.scroll-button{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0 0.5rem;
+}
+
+.tax-toggle{
+    border:1px solid black;
+    width:fit-content;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    margin-left: auto;
+    flex-shrink: 0; /* Prevents toggle text from wrapping */
+}
+
+.tax-info{
+    display: none;
+}
+</style>
+
+<!-- <div class="container"> -->
+    <!-- <h3>All Listings</h3> -->
+    <!-- <p class="d-md-none">
+        <button class="btn btn-light border-1 border-dark" type="button" data-bs-toggle="collapse" data-bs-target="#category-filters">
+            Filters
+        </button>
+    </p> -->
+    <div id="category-filters">
+        <div class="collapse-wrapper-inner"> 
+
+        <button class="btn scroll-button" onclick="document.getElementById('filters').scrollBy({left: -150, behavior: 'smooth'})">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        
+        <div id="filters">
+            <div class="filter" onclick="filterData('all-cards')">
+                <div><i class="fa-solid fa-globe"></i></div>
+                <p>All</p>
+            </div>
+            <div class="filter" onclick="filterData('trending')">
+                <div><i class="fa-solid fa-fire"></i></div>
+                <p>Trending</p>
+            </div>
+            <div class="filter" onclick="filterData('rooms')">
+                <div><i class="fa-solid fa-bed"></i></div>
+                <p>Rooms</p>
+            </div>
+            <div class="filter" onclick="filterData('cities')">
+                <div><i class="fa-solid fa-mountain-city"></i></div>
+                <p>Iconic cities</p>
+            </div>
+            <div class="filter" onclick="filterData('mountains')">
+                <div><i class="fa-solid fa-mountain"></i></div>
+                <p>Mountains</p>
+            </div>
+            <div class="filter" onclick="filterData('castles')">
+                <div><i class="fa-brands fa-fort-awesome"></i></div>
+                <p>Castles</p>
+            </div>
+            <div class="filter" onclick="filterData('pools')">
+                <div><i class="fa-solid fa-person-swimming"></i></div>
+                <p>Amazing Pools</p>
+            </div>
+            <div class="filter" onclick="filterData('camping')">
+                <div><i class="fa-solid fa-campground"></i></div>
+                <p>Camping</p>
+            </div>
+            <div class="filter" onclick="filterData('farms')">
+                <div><i class="fa-solid fa-cow"></i></div>
+                <p>Farms</p>
+            </div>
+            <div class="filter" onclick="filterData('deserts')">
+                <div><i class="fa-brands fa-hotjar"></i></div>
+                <p>Deserts</p>
+            </div>
+            <div class="filter" onclick="filterData('arctic')">
+                <div><i class="fa-solid fa-snowflake"></i></div>
+                <p>Arctic</p>
+            </div>
+            <div class="filter" onclick="filterData('islands')">
+                <div><i class="fa-solid fa-umbrella-beach"></i></div>
+                <p>islands</p>
+            </div>
+        </div>
+
+        <button class="btn scroll-button" onclick="document.getElementById('filters').scrollBy({left: 150, behavior: 'smooth'})">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+        
+        <div class="tax-toggle small ">
+            <div class="form-check form-check-reverse form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                <label class="form-check-label" for="switchCheckDefault">Show prices after taxes</label>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+        <% for (let listing of listings) {%>
+            <div class="col all-cards <%=listing.category?listing.category.toLowerCase():'' %>">
+                <a class="listing-link" href="/listings/<%=listing._id%>">
+                    <div class="listing-card card col">
+                        <img src="<%=listing.image.url%>" class="card-img-top" style="height: 20rem" alt="<%=listing.title%>">
+                        <div class="card-img-overlay"></div>
+                        <!-- card-img-overlay makes the div overlay over the image above 
+                        so the properties like hover effect on this div can also be seen on th eimage-->
+                        <div class="card-body">
+                            <p class="card-text"><b><%=listing.title%></b>
+                            <br>&#8377; <%=listing.price.toLocaleString("en-IN")%>/night
+                            <i class="tax-info"> &nbsp; &nbsp;+18% GST</i>
+                            <br><%=listing.description%></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <%}%>
+    </div>
+
+<script>
+
+    function checkScrollButtons(){
+        //scrolling arrows will be visible if overflow is there
+        const filters=document.getElementById('filters');
+        let displayScroll=filters.scrollWidth>filters.clientWidth ? 'inline-flex' : 'none';
+        const scrollButton=document.querySelectorAll(".scroll-button");
+        scrollButton.forEach(b=>{
+            b.style.display=displayScroll;
+        });
+    }
+    window.onload=window.onresize=checkScrollButtons;
+
+    function filterData(category){
+        //filtering listings on index page
+        document.querySelectorAll(".all-cards").forEach(x=>x.style.display='none');
+        document.querySelectorAll(`.${category}`).forEach(x=>x.style.display='block');
+    };
+
+    //to display taxes
+    const taxSwitch=document.querySelector("#switchCheckDefault");
+    taxSwitch.addEventListener("click",(e)=>{
+        // console.log("clicked");
+        let taxInfo=document.getElementsByClassName('tax-info');//we gave class to <i></i> because every list will have it
+        //so we cannot give same id to all <i> of all lists
+        // console.log("taxInfo",taxInfo);
+        for(info of taxInfo){
+            if(info.style.display==='inline'){//we cannot check for 'none' like we did for 'inline' here
+                info.style.display='none';
+            }else{
+                info.style.display='inline';
+            }
+        }
+
+    });
+
+</script>
