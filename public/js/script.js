@@ -53,9 +53,9 @@ const searchBar=document.querySelector(".search-bar");
 // console.log("searchBar",searchBar);
 searchBar.addEventListener("submit",(e)=>{
   e.preventDefault();
-  console.log("e",e);
+  // console.log("e",e);
   const searchInput=searchBar.querySelector(".search-input");
-  console.log("input",searchInput.value);
+  // console.log("input",searchInput.value);
   const query=searchInput.value.trim();
   window.location.href=`/listings?search=${encodeURIComponent(query)}`;
 })
