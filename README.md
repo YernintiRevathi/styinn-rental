@@ -11,7 +11,7 @@ StayInn is a full-stack property rental marketplace where users can list, browse
 ### Listings
 - Create, view, edit, and delete property listings
 - Upload and manage listing images via **Cloudinary**
-- Automatic location geocoding using the **MapTiler API** (converts address to map coordinates)
+- Automatic location geocoding using the **MapTiler API**, with an interactive map displayed on each listing showing its location
 - Search listings by title, description, location, country, price, or owner username
 - Owner-only edit/delete access enforced via custom authorization middleware
 
